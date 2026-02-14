@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { prompt } = req.body;
+    const { prompt, apiKey } = req.body;
 
     // Validate prompt
     if (!prompt || typeof prompt !== 'string' || prompt.trim() === '') {
@@ -19,11 +19,11 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Prompt is required and must be a non-empty string' });
     }
 
-    // Validate API key
-    const KEY = process.env.GEMINI_API_KEY;
+    // Validate API key - accept from request or environment
+    const KEY = apiKey || process.env.GEMINI_API_KEY;
     if (!KEY || typeof KEY !== 'string' || KEY.trim() === '') {
       res.setHeader('Access-Control-Allow-Origin', '*');
-      return res.status(500).json({ error: 'API key is not configured. Please set GEMINI_API_KEY environment variable.' });
+      return res.status(500).json({ error: 'API key is required. Set it in the request or GEMINI_API_KEY environment variable.' });
     }
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${KEY}`;
