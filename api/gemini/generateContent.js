@@ -37,6 +37,14 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+
+    // Log for debugging
+    if (!response.ok) {
+      console.error('Gemini API error:', response.status, JSON.stringify(data));
+    } else {
+      console.log('Gemini API response received:', response.status);
+    }
+
     res.setHeader('Access-Control-Allow-Origin', '*');
     return res.status(response.status).json(data);
   } catch (error) {
